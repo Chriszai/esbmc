@@ -47,7 +47,9 @@ struct messaget
       FILE *f,
       VerbosityLevel lvl,
       fmt::string_view format,
-      fmt::format_args args);
+      fmt::format_args args,
+      const char *file,
+      int line);
 
   public:
     VerbosityLevel verbosity;
@@ -70,10 +72,8 @@ struct messaget
       FILE *f = target(mod, lvl);
       if (!f)
         return false;
-      println(f, lvl, format, fmt::make_format_args(args...));
+      println(f, lvl, format, fmt::make_format_args(args...), file, line);
       return true;
-      (void)file;
-      (void)line;
     }
   } state = {VerbosityLevel::Status, {}, stderr};
 };

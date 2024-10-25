@@ -1,12 +1,17 @@
 
 #include <util/config.h>
 #include <util/message.h>
+#include <ctime>
+#include <chrono>
+#include <iomanip>
 
 void messaget::statet::println(
   FILE *f,
   VerbosityLevel lvl,
   fmt::string_view format,
-  fmt::format_args args)
+  fmt::format_args args,
+  const char *file,
+  int line)
 {
   if (config.options.get_bool_option("color"))
   {
@@ -45,7 +50,9 @@ void messaget::statet::println(
       fmt::print(f, "WARNING: ");
     fmt::vprint(f, format, args);
   }
-
+  std::time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+  std::string timeStr = (std::ostringstream{} << std::put_time(std::localtime(&currentTime), "%Y-%m-%d %H:%M:%S")).str();
+  fmt::print(f, "File: {}, Line: {}, [{}]", file, line, timeStr);
   fmt::print(f, "\n");
 }
 
